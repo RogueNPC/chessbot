@@ -5,10 +5,10 @@ A simple chess engine that plays average chess.
 
 ## Table of Contents
 1. [Release Notes](#release-notes)
+2. [Built With](#built)
+3. [How to Play](#how-to)
 <!-- 2. [Roadmap](#roadmap)
 3. [Purpose](#purpose) -->
-4. [Built With](#built)
-5. [How to Play](#how-to)
 
 <!-- <a name="release-notes"/> -->
 
@@ -31,8 +31,8 @@ A simple chess engine that plays average chess.
 
 ## Built With
 - JavaScript
-- [chess.js](https://github.com/jhlywa/chess.js) API
-- [chessboard.js](https://chessboardjs.com/index.html) API
+- [chess.js](https://github.com/jhlywa/chess.js)
+- [chessboard.js](https://chessboardjs.com/index.html)
 
 <a name="how-to"/>
 
