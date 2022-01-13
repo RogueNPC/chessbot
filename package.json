@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/RogueNPC/chessbot#readme",
   "dependencies": {
-    "chess.js": "^0.12.0"
+    "@chrisoakman/chessboardjs": "^1.0.0",
+    "chess.js": "^0.12.0",
+    "jquery": "^3.6.0"
   }
 }
