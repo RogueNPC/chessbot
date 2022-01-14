@@ -1,5 +1,6 @@
 # chessbot
 
+![chessbot banner](./img/ChessbotBanner.png)
 <!-- Image of product -->
 A simple chess engine that plays average chess using the minimax algorithm optimized by [alpha-beta pruning](https://www.chessprogramming.org/Alpha-Beta) and [piece-square tables](https://www.chessprogramming.org/Simplified_Evaluation_Function).
 
