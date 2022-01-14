@@ -3,9 +3,6 @@ var game = new Chess()
 
 /* Move evaluation for the bot */
 
-// Setting weights for each piece (k_e = king endgame)
-var weights = {p: 100, n: 300, b: 330, r: 500, q: 900, k: 20000, k_e: 20000}
-
 // Piece-Square Tables (a rating for where a piece should want to be at where positive is good and negative is bad)
 var whitePawn =
     [
@@ -74,17 +71,17 @@ var whiteKing =
         [ 20, 30, 10,  0,  0, 10, 30, 20]
     ]
 
-var whiteKingEndgame =
-    [
-        [-50,-40,-30,-20,-20,-30,-40,-50],
-        [-30,-20,-10,  0,  0,-10,-20,-30],
-        [-30,-10, 20, 30, 30, 20,-10,-30],
-        [-30,-10, 30, 40, 40, 30,-10,-30],
-        [-30,-10, 30, 40, 40, 30,-10,-30],
-        [-30,-10, 20, 30, 30, 20,-10,-30],
-        [-30,-30,  0,  0,  0,  0,-30,-30],
-        [-50,-30,-30,-30,-30,-30,-30,-50]
-    ]
+// var whiteKingEndgame =
+//     [
+//         [-50,-40,-30,-20,-20,-30,-40,-50],
+//         [-30,-20,-10,  0,  0,-10,-20,-30],
+//         [-30,-10, 20, 30, 30, 20,-10,-30],
+//         [-30,-10, 30, 40, 40, 30,-10,-30],
+//         [-30,-10, 30, 40, 40, 30,-10,-30],
+//         [-30,-10, 20, 30, 30, 20,-10,-30],
+//         [-30,-30,  0,  0,  0,  0,-30,-30],
+//         [-50,-30,-30,-30,-30,-30,-30,-50]
+//     ]
 
 // Black Piece-Square Tables are mirrored versions of the White PSTs
 var blackPawn = whitePawn.slice().reverse()
@@ -93,7 +90,64 @@ var blackBishop = whiteBishop.slice().reverse()
 var blackRook = whiteRook.slice().reverse()
 var blackQueen = whiteQueen.slice().reverse()
 var blackKing = whiteKing.slice().reverse()
-var blackKingEndgame = whiteKingEndgame.slice().reverse()
+// var blackKingEndgame = whiteKingEndgame.slice().reverse()
+
+
+// gets the value of the piece on its current square using the piece-square tables above
+function getPieceValue(piece, x, y){
+    // no piece on the square
+    if (piece === null) {
+        return 0;
+    }
+
+    // Setting weights for each piece
+    // weights = {p: 100, n: 300, b: 330, r: 500, q: 900, k: 20000}
+    function getColorValue(piece, x, y){
+        if (piece.type === 'p') {
+            return 100 + (piece.color === 'w' ? whitePawn[y][x] : blackPawn[y][x]);
+        } else if (piece.type === 'n') {
+            return 300 + (piece.color === 'w' ? whiteKnight[y][x] : blackKnight[y][x]);
+        } else if (piece.type === 'b') {
+            return 330 + (piece.color === 'w' ? whiteBishop[y][x] : blackBishop[y][x]);
+        } else if (piece.type === 'r') {
+            return 500 + (piece.color === 'w' ? whiteRook[y][x] : blackRook[y][x]);
+        } else if (piece.type === 'q') {
+            return 900 + (piece.color === 'w' ? whiteQueen[y][x] : blackQueen[y][x]);
+        } else if (piece.type === 'k') {
+            return 20000 (piece.color === 'w' ? whiteKing[y][x] : blackKing[y][x]);
+        }
+    }
+    var colorValue = getColorValue(piece, x, y)
+    // positive value for white, negative value for black
+    return piece.color === 'w' ? colorValue : -colorValue;
+}
+
+// evaluates the pieces on the board by looking at every sqare of the board
+function evaluateBoard(board){
+    var totalEval = 0;
+    for (var i=0; i<8; i++){
+        for (var j=0; j< 8; j++){
+            totalEval = totalEval + getPieceValue(board[i][j],i, j);
+        }
+    }
+}
+
+function minimax(depth, game, alpha, beta, isMaximisingPlayer){
+
+    var possibleMoves = game.ugly_moves();
+
+    var currMove;
+    var bestMove;
+
+    for (var i = 0; i < possibleMoves.length; i++){
+        var currMove = possibleMoves[i];
+
+        // Looks at all the moves if it made currMove (looks ahead one more move)
+        var currPrettyMove = game.ugly_move(currMove)
+
+    }
+
+}
 
 /* board and move visualization using chessboardjs */
 
