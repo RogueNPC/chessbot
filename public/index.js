@@ -132,10 +132,10 @@ function evaluateBoard(board){
     }
 }
 
-function minimax(depth, game, alpha, beta, isMaximisingPlayer){
+// generates move for bot to play
+function minimaxBase(depth, game, isMaximisingPlayer){
 
     var possibleMoves = game.ugly_moves();
-
     var currMove;
     var bestMove;
 
@@ -143,10 +143,53 @@ function minimax(depth, game, alpha, beta, isMaximisingPlayer){
         var currMove = possibleMoves[i];
 
         // Looks at all the moves if it made currMove (looks ahead one more move)
-        var currPrettyMove = game.ugly_move(currMove)
+        var value = minimaxRecursive(depth - 1, game, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, !isMaximisingPlayer);
+        game.undo();
+        if (value >= bestMove) {
+            bestMove = value;
+            bestMoveFound = currMove
+        }
+    }
+    return bestMoveFound
+}
 
+// alpha-beta pruning generates move tree for bot to evaluate moves
+function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer){
+    
+    // game evaluation after making a line of moves
+    if (depth == 0) {
+        var eval = -evaluateBoard(game.board())
     }
 
+    // gets all moves available after previous move
+    var currPrettyMoves = game.ugly_move(currMove)
+
+    // minimax search algorithm with alpha-beta pruning implementation
+    // isMaximisingPlayer toggles on and off to generate moves that it believes both the bot and the user will make in sequential order
+    if (isMaximisingPlayer) {
+        var bestMove = Number.NEGATIVE_INFINITY;
+        for (var i = 0; i < currPrettyMoves.length; i++) {
+            game.ugly_move(currPrettyMoves[i]);
+            bestMove = Math.max(bestMove, minimax(depth - 1, game, alpha, beta, !isMaximisingPlayer));
+            game.undo();
+            alpha = Math.max(alpha, bestMove);
+            if (beta <= alpha) {
+                return bestMove
+            }
+        }
+    }
+    else {
+        var bestMove = Number.POSITIVE_INFINITY;
+        for (var i = 0; i < currPrettyMoves.length; i++) {
+            game.ugly_move(currPrettyMoves[i]);
+            bestMove = Math.max(bestMove, minimax(depth - 1, game, alpha, beta, !isMaximisingPlayer));
+            game.undo();
+            beta = Math.max(beta, bestMove);
+            if (beta <= alpha) {
+                return bestMove
+            }
+        }
+    }
 }
 
 /* board and move visualization using chessboardjs */
