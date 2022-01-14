@@ -1,6 +1,7 @@
 var board1 = null
 var game = new Chess()
 
+
 /* Move evaluation for the bot */
 
 // Piece-Square Tables (a rating for where a piece should want to be at where positive is good and negative is bad)
@@ -114,7 +115,7 @@ function getPieceValue(piece, x, y){
         } else if (piece.type === 'q') {
             return 900 + (piece.color === 'w' ? whiteQueen[y][x] : blackQueen[y][x]);
         } else if (piece.type === 'k') {
-            return 20000 (piece.color === 'w' ? whiteKing[y][x] : blackKing[y][x]);
+            return 20000 + (piece.color === 'w' ? whiteKing[y][x] : blackKing[y][x]);
         }
     }
     var colorValue = getColorValue(piece, x, y)
@@ -135,7 +136,7 @@ function evaluateBoard(board){
 // generates move for bot to play
 function minimaxBase(depth, game, isMaximisingPlayer){
 
-    var possibleMoves = game.ugly_moves();
+    var possibleMoves = game.moves();
     var currMove;
     var bestMove;
 
@@ -162,15 +163,15 @@ function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer){
     }
 
     // gets all moves available after previous move
-    var currPrettyMoves = game.ugly_move(currMove)
+    var possibleMoves = game.moves();
 
     // minimax search algorithm with alpha-beta pruning implementation
     // isMaximisingPlayer toggles on and off to generate moves that it believes both the bot and the user will make in sequential order
     if (isMaximisingPlayer) {
         var bestMove = Number.NEGATIVE_INFINITY;
-        for (var i = 0; i < currPrettyMoves.length; i++) {
-            game.ugly_move(currPrettyMoves[i]);
-            bestMove = Math.max(bestMove, minimax(depth - 1, game, alpha, beta, !isMaximisingPlayer));
+        for (var i = 0; i < possibleMoves.length; i++) {
+            game.move(possibleMoves[i]);
+            bestMove = Math.max(bestMove, minimaxRecursive(depth - 1, game, alpha, beta, !isMaximisingPlayer));
             game.undo();
             alpha = Math.max(alpha, bestMove);
             if (beta <= alpha) {
@@ -180,9 +181,9 @@ function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer){
     }
     else {
         var bestMove = Number.POSITIVE_INFINITY;
-        for (var i = 0; i < currPrettyMoves.length; i++) {
-            game.ugly_move(currPrettyMoves[i]);
-            bestMove = Math.max(bestMove, minimax(depth - 1, game, alpha, beta, !isMaximisingPlayer));
+        for (var i = 0; i < possibleMoves.length; i++) {
+            game.move(possibleMoves[i]);
+            bestMove = Math.max(bestMove, minimaxRecursive(depth - 1, game, alpha, beta, !isMaximisingPlayer));
             game.undo();
             beta = Math.max(beta, bestMove);
             if (beta <= alpha) {
@@ -191,6 +192,33 @@ function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer){
         }
     }
 }
+
+
+/* chessbot turn taking */
+
+function getBestMove(game){
+    // TODO: make specific status indicators for when the game ends (e.g. checkmate, stalemate, etc.)
+    if (game.game_over()) {
+        alert('Game over');
+    }
+
+    // defaulting depth to 3
+    // TODO: make depth change able
+    var depth = 3;
+    var bestMove = minimaxBase(depth, game, true)
+
+    return bestMove
+}
+
+function makeBestMove(){
+    var bestMove = getBestMove(game);
+    game.move(bestMove);
+    board.position(game.fen());
+    if (game.game_over()) {
+        alert('Game over')
+    }
+}
+
 
 /* board and move visualization using chessboardjs */
 
@@ -231,6 +259,8 @@ function onDrop (source, target) {
 
     // illegal move
     if (move === null) return 'snapback'
+
+    window.setTimeout(makeBestMove, 250);
 }
 
 function onMouseoverSquare (square, piece) {
