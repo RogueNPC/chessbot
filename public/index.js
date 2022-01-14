@@ -12,7 +12,7 @@ var whitePawn =
         [10, 10, 20, 30, 30, 20, 10, 10],
         [ 5,  5, 10, 25, 25, 10,  5,  5],
         [ 0,  0,  0, 20, 20,  0,  0,  0],
-        [ 5, -5,-10,  0,  0,-10, -5,  5],
+        [ 5,  5,-10,  0,  0,-10,  5,  5],
         [ 5, 10, 10,-20,-20, 10, 10,  5],
         [ 0,  0,  0,  0,  0,  0,  0,  0]
     ]
@@ -35,7 +35,7 @@ var whiteBishop =
         [-10,  5,  5, 10, 10,  5,  5,-10],
         [-10,  0, 10, 10, 10, 10,  0,-10],
         [-10, 10, 10, 10, 10, 10, 10,-10],
-        [-10,  5,  0,  0,  0,  0,  5,-10],
+        [-10, 15,  0,  0,  0,  0, 15,-10],
         [-20,-10,-10,-10,-10,-10,-10,-20]
     ]
 var whiteRook =
@@ -126,43 +126,47 @@ function getPieceValue(piece, x, y){
 // evaluates the pieces on the board by looking at every sqare of the board
 function evaluateBoard(board){
     var totalEval = 0;
-    for (var i=0; i<8; i++){
-        for (var j=0; j< 8; j++){
-            totalEval = totalEval + getPieceValue(board[i][j],i, j);
+    for (var i = 0; i < 8; i++){
+        for (var j = 0; j < 8; j++){
+            totalEval = totalEval + getPieceValue(board[i][j], i, j);
         }
     }
+    return totalEval;
 }
 
 // generates move for bot to play
 function minimaxBase(depth, game, isMaximisingPlayer){
 
     var possibleMoves = game.moves();
-    var currMove;
-    var bestMove;
+    var bestMove = Number.NEGATIVE_INFINITY;
+    var bestMoveMade;
 
     for (var i = 0; i < possibleMoves.length; i++){
-        var currMove = possibleMoves[i];
+        var possibleMove = possibleMoves[i];
+        game.move(possibleMove);
 
-        // Looks at all the moves if it made currMove (looks ahead one more move)
+        // Looks at all the moves if it made possibleMove (looks ahead one more move)
         var value = minimaxRecursive(depth - 1, game, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, !isMaximisingPlayer);
         game.undo();
+
+        // Finds move that increases bot's evaluation of the board (a.k.a chances of winning)
         if (value >= bestMove) {
             bestMove = value;
-            bestMoveFound = currMove
+            bestMoveMade = possibleMove
         }
     }
-    return bestMoveFound
+    return bestMoveMade
 }
 
 // alpha-beta pruning generates move tree for bot to evaluate moves
 function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer){
     
     // game evaluation after making a line of moves
-    if (depth == 0) {
-        var eval = -evaluateBoard(game.board())
+    if (depth === 0) {
+        return -evaluateBoard(game.board())
     }
 
-    // gets all moves available after previous move
+    // gets all moves available
     var possibleMoves = game.moves();
 
     // minimax search algorithm with alpha-beta pruning implementation
@@ -175,21 +179,23 @@ function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer){
             game.undo();
             alpha = Math.max(alpha, bestMove);
             if (beta <= alpha) {
-                return bestMove
+                return bestMove;
             }
         }
+        return bestMove;
     }
     else {
         var bestMove = Number.POSITIVE_INFINITY;
         for (var i = 0; i < possibleMoves.length; i++) {
             game.move(possibleMoves[i]);
-            bestMove = Math.max(bestMove, minimaxRecursive(depth - 1, game, alpha, beta, !isMaximisingPlayer));
+            bestMove = Math.min(bestMove, minimaxRecursive(depth - 1, game, alpha, beta, !isMaximisingPlayer));
             game.undo();
-            beta = Math.max(beta, bestMove);
+            beta = Math.min(beta, bestMove);
             if (beta <= alpha) {
-                return bestMove
+                return bestMove;
             }
         }
+        return bestMove;
     }
 }
 
@@ -213,11 +219,22 @@ function getBestMove(game){
 function makeBestMove(){
     var bestMove = getBestMove(game);
     game.move(bestMove);
-    board.position(game.fen());
+    board1.position(game.fen());
     if (game.game_over()) {
         alert('Game over')
     }
 }
+
+// function makeRandomMove () {
+//     var possibleMoves = game.moves()
+  
+//     // game over
+//     if (possibleMoves.length === 0) return
+  
+//     var randomIdx = Math.floor(Math.random() * possibleMoves.length)
+//     game.move(possibleMoves[randomIdx])
+//     board1.position(game.fen())
+//   }
 
 
 /* board and move visualization using chessboardjs */
@@ -257,10 +274,12 @@ function onDrop (source, target) {
         promotion: 'q' // NOTE: always promote to a queen for example simplicity
     })
 
+    removeGreySquares()
     // illegal move
     if (move === null) return 'snapback'
 
     window.setTimeout(makeBestMove, 250);
+    // window.setTimeout(makeRandomMove, 250);
 }
 
 function onMouseoverSquare (square, piece) {
