@@ -236,6 +236,36 @@ function makeBestMove(){
 //     board1.position(game.fen())
 //   }
 
+/* event listeners for various buttons */
+
+$('#newGameBtn').on('click', function () {
+    game.reset();
+    board1.position(game.fen());
+});
+
+var undo_stack = [];
+
+function undo() {
+  var move = game.undo();
+  undo_stack.push(move);
+
+  // Maintain a maximum stack size
+  if (undo_stack.length > 10) {
+    undo_stack.shift();
+  }
+  board1.position(game.fen());
+}
+
+$('#undoMoveBtn').on('click', function () {
+  if (game.history().length >= 2) {
+    // Undo twice: Opponent's latest move, followed by player's latest move
+    undo();
+    undo();
+  } 
+  else {
+    alert('Cannot undo.');
+  }
+});
 
 /* board and move visualization using chessboardjs */
 
