@@ -12,24 +12,32 @@
     <!-- Creates a board using the chessboardjs API -->
     <div id="board1" style="width: 400px; margin: auto"></div>
     <!-- New Game and Undo Move Buttons -->
-    <div style="text-align: center; margin: 10px" class="boardState">
-      <button style="margin: 0px 25px 0px 0px" class="btn" id="newGameBtn">New Game</button>
-      <button style="margin: 0px 0px 0px 25px" class="btn" id="undoMoveBtn">Undo Move</button>
+    <div class="boardState" style="text-align: center; margin: 10px">
+      <button class="btn" id="newGameBtn" style="margin: 0px 25px 0px 0px">New Game</button>
+      <button class="btn" id="undoMoveBtn" style="margin: 0px 0px 0px 25px">Undo Move</button>
     </div>
     <!-- Bot Difficulty Setting (Based on how deep the bot searches)-->
-    <div style="text-align: center; margin: 10px" class="botDifficulty">
+    <div class="botDifficulty" style="text-align: center; margin: 10px">
       <label for="search-depth">Bot Difficulty</label>
       <select id="search-depth">
         <option value="1">Beginner</option>
         <option value="2" selected>Intermediate</option>
         <option value="3">Advanced</option>
-        <!-- currently, harder difficulties crash bot for some reason-->
+        <!-- currently, harder difficulties crash bot due to depth complexity-->
         <!-- <option value="4">Expert</option> -->
         <!-- <option value="5">Master</option> -->
       </select>
     </div>
 
-    <!-- Maybe add postions evaluated and time taken -->
+    <!-- Postions evaluated and time taken -->
+    <div class="botStatstics" style="text-align: center; margin: 10px">
+      <div>
+        <span>The bot has evaluated <span id="position-count">0</span> positions.</span>
+      </div>
+      <div>
+        <span>It took the bot <span id="move-time">0</span> seconds.</span>
+      </div>
+    </div>
 
     <!-- jQuery -->
     <script src="jquery/jquery.min.js"></script>

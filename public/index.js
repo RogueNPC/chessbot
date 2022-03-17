@@ -1,5 +1,6 @@
 var board1 = null
 var game = new Chess()
+var positionCount
 
 
 /* Move evaluation for the bot */
@@ -160,7 +161,9 @@ function minimaxBase(depth, game, isMaximisingPlayer){
 
 // alpha-beta pruning generates move tree for bot to evaluate moves
 function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer){
-    
+    // increments positionCount everytime the bot looks at a move
+    positionCount++;
+
     // game evaluation after making a line of moves
     if (depth === 0) {
         return -evaluateBoard(game.board())
@@ -203,14 +206,27 @@ function minimaxRecursive(depth, game, alpha, beta, isMaximisingPlayer){
 /* chessbot turn taking */
 
 function getBestMove(game){
+    // resets "number of positions calculated" counter
+    positionCount = 0;
+
     // TODO: make specific status indicators for when the game ends (e.g. checkmate, stalemate, etc.)
     if (game.game_over()) {
         alert('Game over');
     }
 
+    // obtain depth and make move based on bot difficulty selected
     var depth = parseInt($('#search-depth').find(':selected').val());
-    var bestMove = minimaxBase(depth, game, true)
 
+    var startTime = new Date().getTime();
+    var bestMove = minimaxBase(depth, game, true)
+    var endTime = new Date().getTime();
+
+    // calculates moveTime based on time bot takes to find bestMove
+    var moveTime = endTime - startTime
+
+    // display bot statistics
+    $('#position-count').text(positionCount);
+    $('#move-time').text(moveTime/1000);
     return bestMove
 }
 
