@@ -18,17 +18,22 @@ A simple chess engine that plays average chess using the minimax algorithm optim
 
 - 🎉 first release!
 
+#### v1.1.0.   (Mar 17 2022)
+
+- Allows users to see how long the bot takes per move
+- Shows number of positions bot calculates
+- Added new game button
+- Added undo move button
+- Added difficulty setting
+
 <a name="roadmap"/>
 
 ## Roadmap
 <!-- More images of product in different functions -->
 In future releases:
-- Allow users to see how long the bot takes per move
-- Show number of positions bot calculates
-- New game button
-- Undo move button
 - Move history
-- Difficulty setting
+- Hint button
+- Evaluation bar graphic
 - Bot vs Bot mode
 - Cleaner UI
 
