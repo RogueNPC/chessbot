@@ -208,9 +208,7 @@ function getBestMove(game){
         alert('Game over');
     }
 
-    // defaulting depth to 3
-    // TODO: make depth change able
-    var depth = 3;
+    var depth = parseInt($('#search-depth').find(':selected').val());
     var bestMove = minimaxBase(depth, game, true)
 
     return bestMove
