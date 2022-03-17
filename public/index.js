@@ -209,11 +209,6 @@ function getBestMove(game){
     // resets "number of positions calculated" counter
     positionCount = 0;
 
-    // TODO: make specific status indicators for when the game ends (e.g. checkmate, stalemate, etc.)
-    if (game.game_over()) {
-        alert('Game over');
-    }
-
     // obtain depth and make move based on bot difficulty selected
     var depth = parseInt($('#search-depth').find(':selected').val());
 
