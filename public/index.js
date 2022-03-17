@@ -229,6 +229,10 @@ function makeBestMove(){
     var bestMove = getBestMove(game);
     game.move(bestMove);
     board1.position(game.fen());
+
+    evaluation = evaluateBoard(game.board()) / 100.0
+    $('#evaluation-bar').text(evaluation.toFixed(2))
+
     if (game.game_over()) {
         alert('Game over')
     }
@@ -316,6 +320,9 @@ function onDrop (source, target) {
     removeGreySquares()
     // illegal move
     if (move === null) return 'snapback'
+
+    evaluation = evaluateBoard(game.board()) / 100.0
+    $('#evaluation-bar').text(evaluation.toFixed(2))
 
     window.setTimeout(makeBestMove, 250);
     // window.setTimeout(makeRandomMove, 250);
